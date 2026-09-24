@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Gerador de Etiquetas WHEATON</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/JsBarcode/3.11.5/JsBarcode.all.min.js"></script>
+<title>Gerador de Etiquetas 10x10 cm</title>
+<meta name="description" content="Gerador de etiquetas 10x10 cm para impressora Zebra: impressão direta ou PDF.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%B7%EF%B8%8F%3C/text%3E%3C/svg%3E">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
@@ -165,139 +166,57 @@
     justify-content: flex-start;
   }
 
+  /* ---- Etiqueta (layout baseado no modelo Word Zebra 10x10 cm) ---- */
   .label-card {
     width: 10cm;
     height: 10cm;
     background: #fff;
-    border: 1.5px solid var(--azul);
-    border-radius: 10px;
-    padding: 0.5cm 0.55cm;
+    box-shadow: 0 1px 6px rgba(0,0,0,.18);
+    padding-top: 0.88cm;          /* mesma distância do topo do modelo */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow: hidden;
+    font-family: "Arial Black", "Arial Bold", Arial, Helvetica, sans-serif;
+    font-weight: 900;
+    color: #000;
+  }
+
+  /* Moldura: borda externa 1,5 pt + divisórias internas 1,5 pt */
+  .moldura {
+    width: 9.25cm;
+    border: 1.5pt solid #000;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    overflow: hidden;
   }
-
-  .card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-bottom: 0.28cm;
-    border-bottom: 1px solid var(--borda);
-    flex: 0 0 auto;
-  }
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .brand img {
-    height: 0.75cm;
-    width: auto;
-    object-fit: contain;
-  }
-  .brand span {
-    font-size: 17px;
-    font-weight: 800;
-    color: var(--azul);
-    letter-spacing: 0.5px;
-  }
-  .badge {
-    background: var(--azul);
-    color: #fff;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    padding: 4px 10px;
-    border-radius: 5px;
-    white-space: nowrap;
-  }
-
-  .fields-block {
-    flex: 1;
+  .moldura .row {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 0.32cm;
-    padding: 0.15cm 0;
-  }
-
-  .field { line-height: 1.3; }
-  .field-label {
-    font-size: 9.5px;
-    font-weight: 700;
-    color: var(--cinza);
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
-    margin-bottom: 2px;
-  }
-  .field-value {
-    font-size: 19px;
-    font-weight: 800;
-    color: var(--texto);
-    outline: none;
+    align-items: center;
+    text-align: center;
+    font-size: 18pt;
+    line-height: 1.15;
+    padding: 0.1cm 0.2cm;
     word-break: break-word;
   }
-  .field-value:focus { background: #fffbdd; }
+  .moldura .row + .row { border-top: 1.5pt solid #000; }
+  .row-vol    { min-height: 1.92cm; }
+  .row-exp    { min-height: 2.32cm; }
+  .row-cli    { min-height: 2.32cm; }
+  .row-po     { min-height: 1.29cm; }
 
-  .po-box {
-    background: var(--azul-claro);
-    border: 1px solid #c7dcf5;
-    border-radius: 7px;
-    padding: 0.24cm 0.34cm;
-    flex: 0 0 auto;
+  .row-vol .logo {
+    position: absolute;
+    right: 0.3cm;
+    top: 0.1cm;
+    height: 1.76cm;
+    width: 1.76cm;
+    object-fit: contain;
   }
-  .po-box .field-label { color: #2f5c92; font-size: 9.5px; }
-  .po-value {
-    font-size: 22px;
-    font-weight: 800;
-    color: var(--azul);
-    outline: none;
-  }
-  .po-value:focus { background: #fffbdd; }
-
-  .vol-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex: 0 0 auto;
-    padding: 0.14cm 0;
-    opacity: 0.75;
-  }
-  .vol-row .field-label {
-    line-height: 1.4;
-    margin-bottom: 0;
-    font-size: 7.5px;
-  }
-  .vol-box {
-    border: 1px solid var(--borda);
-    border-radius: 6px;
-    padding: 0.06cm 0.24cm;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--cinza);
-    outline: none;
-    text-align: center;
-    min-width: 1.3cm;
-  }
-  .vol-box:focus { background: #fffbdd; }
-
-  .barcode-wrap {
-    text-align: center;
-    flex: 0 0 auto;
-    padding-top: 0.18cm;
-    border-top: 1px solid var(--borda);
-  }
-  .barcode-wrap svg {
-    width: 100%;
-    height: 1cm;
-  }
-  .barcode-text {
-    font-size: 8px;
-    letter-spacing: 1.5px;
-    color: #444;
-    margin-top: 1px;
-  }
+  .moldura [contenteditable] { outline: none; }
+  .moldura [contenteditable]:focus { background: #fffbdd; }
 
   @page {
     size: 10cm 10cm;
@@ -305,25 +224,21 @@
   }
   @media print {
     html, body { background: #fff; padding: 0; margin: 0; width: 10cm; }
-    .module-header, .print-btn, .form-card, .info-bar { display: none; }
+    .module-header, .print-btn, .btn-row, .form-card, .info-bar { display: none; }
     .app { max-width: none; margin: 0; }
-    #labels-container {
-      display: block;
-      gap: 0;
-    }
+    #labels-container { display: block; gap: 0; }
     .label-card {
       width: 10cm;
       height: 10cm;
-      border: none;
-      border-radius: 0;
+      box-shadow: none;
       margin: 0 auto;
       page-break-after: always;
       page-break-inside: avoid;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
     }
-    .label-card:last-child {
-      page-break-after: auto;
-    }
-    .field-value:focus, .po-value:focus, .vol-box:focus { background: none; }
+    .label-card:last-child { page-break-after: auto; }
+    .moldura [contenteditable]:focus { background: none; }
   }
 </style>
 </head>
@@ -338,7 +253,7 @@
     </div>
     <div>
       <h1>Módulo de Impressão de Etiquetas</h1>
-      <p>Wheaton Brasil Vidros - Sistema de Exportação</p>
+      <p>Wheaton Brasil Vidros - Sistema de</p>
     </div>
   </div>
 
@@ -404,63 +319,30 @@ function gerarEtiquetas() {
   for (let i = 0; i < qtd; i++) {
     const numeroAtual = inicio + i;
     const volStr = `${pad(numeroAtual,2)}/${pad(qtd,2)}`;
-    const codigoBarra = `PO${po}-V${pad(numeroAtual,3)}/${pad(qtd,3)}`;
 
     const label = document.createElement('div');
     label.className = 'label-card';
     label.innerHTML = `
-      <div class="card-header">
-        <div class="brand">
-          <img src="${LOGO_SRC}" alt="Wheaton">
-          <span>WHEATON</span>
+      <div class="moldura">
+        <div class="row row-vol">
+          <img class="logo" src="${LOGO_SRC}" alt="Logotipo">
+          <div contenteditable="true">${volStr}</div>
         </div>
-        <div class="badge">EXPORTAÇÃO</div>
-      </div>
-
-      <div class="fields-block">
-        <div class="field">
-          <div class="field-label">Exportador / Exporter:</div>
-          <div class="field-value" contenteditable="true">${exportador}</div>
+        <div class="row row-exp">
+          <div>Exportador:</div>
+          <div contenteditable="true">${exportador}</div>
         </div>
-
-        <div class="field">
-          <div class="field-label">Cliente / Consignee:</div>
-          <div class="field-value" contenteditable="true">${cliente}</div>
+        <div class="row row-cli">
+          <div>Cliente:</div>
+          <div contenteditable="true">${cliente}</div>
         </div>
-
-        <div class="po-box">
-          <div class="field-label">Nº P.O. (Purchase Order):</div>
-          <div class="po-value" contenteditable="true">${po}</div>
+        <div class="row row-po">
+          <div>P.O <span contenteditable="true">${po}</span></div>
         </div>
-      </div>
-
-      <div class="vol-row">
-        <div class="field-label">Vol. Numeration:<br>Volume:</div>
-        <div class="vol-box" contenteditable="true">${volStr}</div>
-      </div>
-
-      <div class="barcode-wrap">
-        <svg class="barcode" data-code="${codigoBarra}"></svg>
-        <div class="barcode-text">${codigoBarra}</div>
       </div>
     `;
     container.appendChild(label);
   }
-
-  // gerar códigos de barras
-  document.querySelectorAll('.barcode').forEach(svg => {
-    try {
-      JsBarcode(svg, svg.getAttribute('data-code'), {
-        format: "CODE128",
-        displayValue: false,
-        height: 34,
-        margin: 0,
-        lineColor: "#1a1f2b"
-      });
-    } catch (e) {
-      console.error(e);
-    }
-  });
 }
 
 async function gerarPDF() {
